@@ -572,6 +572,7 @@ func main() {
 	}
 
 	document, err := loadDocument(target)
+
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 	}

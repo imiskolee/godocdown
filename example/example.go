@@ -1,5 +1,5 @@
 /*
-Package example is an example package with documentation 
+Package example is an example package with documentation
 
 	// Here is some code
 	func example() {
@@ -25,7 +25,6 @@ var (
 
 	this = 0
 
-
 	// A description of That
 	That = 2.1
 )
@@ -33,7 +32,7 @@ var (
 // Another constant section
 const (
 	Another = 0
-	Again = "this"
+	Again   = "this"
 )
 
 // Example is a function that does nothing
@@ -41,7 +40,7 @@ func Example() {
 }
 
 // ExampleType is a type of nothing
-//		
+//
 //		// Here is how to use it:
 //		return &ExampleType{
 //			First: 1,
@@ -49,15 +48,18 @@ func Example() {
 //			nil,
 //		}
 type ExampleType struct {
-	First int
+	First  int
 	Second string
-	Third float64
+	Third  float64
 	Parent *ExampleType
 
-	first int
+	first  int
 	hidden string
 }
 
+//@name Example Name
+// 测试结果
+// 我要
 func (ExampleType) Set() bool {
 	return false
 }

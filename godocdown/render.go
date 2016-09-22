@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"go/doc"
 	"io"
+	"regexp"
+	"strings"
 )
 
 func renderConstantSectionTo(writer io.Writer, list []*doc.Value) {
@@ -30,7 +32,22 @@ func renderFunctionSectionTo(writer io.Writer, list []*doc.Func, inTypeSection b
 		if entry.Recv != "" {
 			receiver = fmt.Sprintf("(%s) ", entry.Recv)
 		}
-		fmt.Fprintf(writer, "%s func %s%s\n\n%s\n%s\n", header, receiver, entry.Name, indentCode(sourceOfNode(entry.Decl)), formatIndent(filterText(entry.Doc)))
+
+		nameSection, _ := regexp.Compile("@name ([^\n\r]+)")
+
+		ss := nameSection.FindAllStringSubmatch(entry.Doc, 1)
+
+		title := fmt.Sprintf("func %s%s", receiver, entry.Name)
+
+		if len(ss) > 0 {
+			if len(ss[0]) > 1 {
+				title = ss[0][1]
+				s := nameSection.FindString(entry.Doc)
+				entry.Doc = strings.Replace(entry.Doc, s, "", 1)
+				fmt.Println(entry.Doc)
+			}
+		}
+		fmt.Fprintf(writer, "%s %s\n\n%s\n\n%s\n", header, title, indentCode(sourceOfNode(entry.Decl)), formatIndent(filterText(entry.Doc)))
 	}
 }
 
@@ -39,7 +56,7 @@ func renderTypeSectionTo(writer io.Writer, list []*doc.Type) {
 	header := RenderStyle.TypeHeader
 
 	for _, entry := range list {
-		fmt.Fprintf(writer, "%s type %s\n\n%s\n\n%s\n", header, entry.Name, indentCode(sourceOfNode(entry.Decl)), formatIndent(filterText(entry.Doc)))
+		fmt.Fprintf(writer, "%stype %s\n\n%s\n\n%s\n", header, entry.Name, indentCode(sourceOfNode(entry.Decl)), formatIndent(filterText(entry.Doc)))
 		renderConstantSectionTo(writer, entry.Consts)
 		renderVariableSectionTo(writer, entry.Vars)
 		renderFunctionSectionTo(writer, entry.Funcs, true)
